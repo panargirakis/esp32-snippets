@@ -40,14 +40,10 @@ public:
 	void        setByUUID(const char* uuid, BLEService* service);
 	void        setByUUID(BLEUUID uuid, BLEService* service);
 	std::string toString();
-	BLEService* getFirst();
-	BLEService* getNext();
-	void 		removeService(BLEService *service);
 
 private:
+	std::map<std::string, BLEService*> m_uuidMap;
 	std::map<uint16_t, BLEService*>    m_handleMap;
-	std::map<BLEService*, std::string> m_uuidMap;
-	std::map<BLEService*, std::string>::iterator m_iterator;
 };
 
 
@@ -58,11 +54,10 @@ class BLEServer {
 public:
 	uint32_t        getConnectedCount();
 	BLEService*     createService(const char* uuid);	
-	BLEService*     createService(BLEUUID uuid, uint32_t numHandles=15, uint8_t inst_id=0);
+	BLEService*     createService(BLEUUID uuid, uint32_t numHandles=15);
 	BLEAdvertising* getAdvertising();
 	void            setCallbacks(BLEServerCallbacks* pCallbacks);
 	void            startAdvertising();
-	void 			removeService(BLEService *service);
 
 
 private:
@@ -103,7 +98,7 @@ public:
 	 *
 	 * @param [in] pServer A reference to the %BLE server that received the client connection.
 	 */
-	virtual void onConnect(BLEServer* pServer);
+	virtual void onConnect(BLEServer* pServer, esp_ble_gatts_cb_param_t *param);
 
 	/**
 	 * @brief Handle an existing client disconnection.
